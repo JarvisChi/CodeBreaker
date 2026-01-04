@@ -28,11 +28,12 @@ struct MatchMarkers: View {
     }
 
     func matchMarker(peg: Int) -> some View {
-        let exactCount = matches.count(where: {match in match == .exact })
-        let foundCount = matches.count(where: {match in match != .nomatch})
+        let exactCount = matches.count { $0 == .exact }
+        let foundCount = matches.count { $0 != .nomatch }
         return Circle()
             .fill(peg < exactCount ? Color.primary : Color.clear)
             .strokeBorder(peg < foundCount ? Color.primary : Color.clear, lineWidth: 2)
+            .aspectRatio(1, contentMode: .fit)
     }
 }
 
