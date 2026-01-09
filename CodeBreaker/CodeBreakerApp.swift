@@ -25,7 +25,7 @@ struct CodeBreakerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CodeBreakerView()
         }
         .modelContainer(sharedModelContainer)
     }
