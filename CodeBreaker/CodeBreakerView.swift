@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CodeBreakerView: View {
-    @State var game = CodeBreaker(pegChoices: [.brown, .yellow, .orange, .black])
+    @State var game = CodeBreaker(pegChoices: [.brown, .yellow, .orange, .black], pegCount: 4)
     var body: some View {
         VStack {
             view(for: game.masterCode)
@@ -18,7 +18,8 @@ struct CodeBreakerView: View {
                     view(for: game.attempts[index])
                 }
             }
-//            pegs(colors: game.attempt[0].pegs)
+            resetButton
+            //            pegs(colors: game.attempt[0].pegs)
         }
         .padding()
     }
@@ -31,6 +32,14 @@ struct CodeBreakerView: View {
         .font(.system(size: 80))
         .minimumScaleFactor(0.1)
     }
+
+    var resetButton: some View {
+        let pegCount = [3, 4, 5, 6].randomElement()
+        return Button("Reset"){
+            game = CodeBreaker(pegChoices: [.brown, .yellow, .orange, .black], pegCount: pegCount ?? 4)
+        }
+    }
+
     func view(for code: Code) -> some View {
         HStack{
             ForEach(code.pegs.indices, id: \.self){ index in

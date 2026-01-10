@@ -11,21 +11,30 @@ import SwiftUI
 typealias Peg = Color
 
 struct CodeBreaker {
-    var masterCode = Code(kind: .master)
-    var guess = Code(kind: .guess)
+    var masterCode: Code
+    var guess: Code
     var attempts: [Code] = []
     let pegChoices: [Peg]
+    let pegCount: Int
 
-    init(pegChoices: [Peg] = [.red, .green, .blue, .yellow]){
+    init(pegChoices: [Peg] = [.red, .green, .blue, .yellow], pegCount: Int){
         self.pegChoices = pegChoices
+        guess = Code(kind: .guess, pegCount: pegCount)
+        masterCode = Code(kind: .master, pegCount: pegCount)
         masterCode.randomize(from: pegChoices)
         print(masterCode)
+        self.pegCount = pegCount
     }
 
     mutating func attemptGuess() {
-        var attempt = guess
-        attempt.kind = .attempt(guess.match(against: masterCode))
-        attempts.append(attempt)
+        let uniqueGuess = !attempts.contains(where: { $0.pegs == guess.pegs })
+        let noMissingPegs = !guess.pegs.contains(Code.missing)
+
+        if noMissingPegs, uniqueGuess {
+            var attempt = guess
+            attempt.kind = .attempt(guess.match(against: masterCode))
+            attempts.append(attempt)
+        }
     }
 
     mutating func changeGuessPeg(at index: Int){
@@ -43,7 +52,15 @@ struct CodeBreaker {
 
 struct Code {
     var kind: Kind
-    var pegs: [Peg] = Array(repeating: Code.missing, count:4)
+    var pegCount: Int
+    var pegs: [Peg]
+
+
+    init(kind: Kind, pegCount: Int){
+        self.pegCount = pegCount
+        pegs = Array(repeating: Code.missing, count: pegCount)
+        self.kind = kind
+    }
 
     static let missing: Peg = .clear
     
